@@ -1,0 +1,11 @@
+E:\libraries\src\main\java\com\nulp\libraries\configuration\SecondaryDBConfig.java
+E:\libraries\src\main\java\com\nulp\libraries\entity\book\Book.java
+E:\libraries\src\main\java\com\nulp\libraries\entity\book\Genre.java
+E:\libraries\src\main\java\com\nulp\libraries\LibrariesApplication.java
+E:\libraries\src\main\java\com\nulp\libraries\entity\library\Library.java
+E:\libraries\src\main\java\com\nulp\libraries\configuration\PrimaryDBConfig.java
+E:\libraries\src\main\java\com\nulp\libraries\repository\book\GenreRepository.java
+E:\libraries\src\main\java\com\nulp\libraries\entity\book\Author.java
+E:\libraries\src\main\java\com\nulp\libraries\repository\book\BookRepository.java
+E:\libraries\src\main\java\com\nulp\libraries\repository\library\LibraryRepository.java
+E:\libraries\src\main\java\com\nulp\libraries\repository\book\AuthorRepository.java
