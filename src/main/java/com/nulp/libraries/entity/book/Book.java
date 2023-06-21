@@ -10,6 +10,10 @@ import lombok.*;
 @Table(schema = "books", name = "books")
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedEntityGraph(name = "book_entity_graph", attributeNodes = {
+        @NamedAttributeNode("author"),
+        @NamedAttributeNode("genre")
+})
 public class Book {
 
     @Id
@@ -22,11 +26,11 @@ public class Book {
     @Column(name = "isbn")
     private String isbn;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
     private Author author;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "genre_id")
     private Genre genre;
 

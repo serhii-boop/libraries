@@ -14,10 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Library {
 
-    @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Id
     @Column(name = "tenant_id")
     private String tenantId;
 

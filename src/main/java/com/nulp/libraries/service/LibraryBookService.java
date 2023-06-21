@@ -6,6 +6,7 @@ import com.nulp.libraries.entity.library.LibraryBooks;
 import com.nulp.libraries.repository.book.BookRepository;
 import com.nulp.libraries.repository.library.LibraryBooksRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class LibraryBookService {
     private final BookRepository bookRepository;
 
     public List<LibraryBooksDTO> getAllBooksByTenantId(String tenantId) {
-        var libraryBooks = libraryBooksRepository.findAllByTenantId(tenantId);
+        PageRequest pageRequest = PageRequest.of(0, 3);
+        var libraryBooks = libraryBooksRepository.findAllByTenantId(tenantId, pageRequest);
         List<Long> ids = libraryBooks.stream().map(LibraryBooks::getBookId).collect(toList());
         var books = bookRepository.findAllByIdIn(ids);
 

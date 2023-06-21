@@ -20,21 +20,29 @@ public class LibraryController {
     private final LibraryBookService libraryBookService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> sayHello() {
         return ResponseEntity.ok("Hello from second endpoint");
     }
 
 
     @GetMapping("/books")
-    @PreAuthorize("hasAuthority('WORKER')")
+   // @PreAuthorize("hasAuthority('WORKER')")
     public ResponseEntity<List<LibraryBooksDTO>> getAllBooksFromLibrary(@RequestParam("tenant") String tenantId) {
         return ResponseEntity.ok(libraryBookService.getAllBooksByTenantId(tenantId));
     }
 
-    @GetMapping("/books")
-    @PreAuthorize("hasAuthority('WORKER')")
-    public ResponseEntity<List<BooksDTO>> getAllBooks() {
-        return ResponseEntity.ok(bookService.getAllBooks());
+    @GetMapping("/books/all")
+    //@PreAuthorize("hasAuthority('WORKER')")
+    public ResponseEntity<List<BooksDTO>> getAllBooks(@RequestParam(value = "pageNumber", required = false) Integer pageNumber ,
+                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        return ResponseEntity.ok(bookService.getAllBooks(pageNumber, pageSize));
+    }
+
+    @GetMapping("/books/{bookName}")
+    public ResponseEntity<List<BooksDTO>> getAllBooksByName(@PathVariable("bookName") String bookName,
+                                                            @RequestParam(value = "pageNumber", required = false) Integer pageNumber ,
+                                                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        return ResponseEntity.ok(bookService.getAllByName(bookName, pageNumber, pageSize));
     }
 }

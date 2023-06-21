@@ -2,6 +2,7 @@ package com.nulp.libraries;
 
 import com.nulp.libraries.entity.book.Author;
 import com.nulp.libraries.entity.book.Book;
+import com.nulp.libraries.entity.book.Genre;
 import com.nulp.libraries.entity.library.Library;
 import com.nulp.libraries.repository.book.AuthorRepository;
 import com.nulp.libraries.repository.book.BookRepository;
@@ -29,7 +30,16 @@ class LibrariesApplicationTests {
     @Test
     void contextLoads() {
         bookRepository.save(Book.builder()
+                        .title("title")
+                .description("Опис книжки")
+                .isbn("ssss")
                 .author(Author.builder()
+                        .id(22)
+                        .authorName("Коцюбинський")
+                        .build())
+                .genre(Genre.builder()
+                        .id(22)
+                        .name("Comedy")
                         .build())
                 .build());
 
