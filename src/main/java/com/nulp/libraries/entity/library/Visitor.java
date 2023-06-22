@@ -32,9 +32,6 @@ public class Visitor {
     @Column(name = "username")
     private String username;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-    private Library library;
+    @Column(name = "tenant_id")
+    private String tenantId;
 }

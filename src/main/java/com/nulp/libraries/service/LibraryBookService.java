@@ -21,8 +21,8 @@ public class LibraryBookService {
     private final BookRepository bookRepository;
 
     public List<LibraryBooksDTO> getAllBooksByTenantId(String tenantId) {
-        PageRequest pageRequest = PageRequest.of(0, 3);
-        var libraryBooks = libraryBooksRepository.findAllByTenantId(tenantId, pageRequest);
+
+        var libraryBooks = libraryBooksRepository.findAllByTenantId(tenantId);
         List<Long> ids = libraryBooks.stream().map(LibraryBooks::getBookId).collect(toList());
         var books = bookRepository.findAllByIdIn(ids);
 

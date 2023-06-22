@@ -17,6 +17,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"author", "genre"})
     Page<Book> findAll(Pageable pageable);
 
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"author", "genre"})
     List<Book> findAllByIdIn(List<Long> ids);
 
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = {"author", "genre"})
