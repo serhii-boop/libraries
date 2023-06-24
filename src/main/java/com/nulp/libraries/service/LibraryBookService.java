@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -49,7 +50,7 @@ public class LibraryBookService {
     public List<Object> getAllBooksByTenantId(String tenant, Integer pageNumber, Integer pageSize, String keyword) {
         Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
 
-        if (tenant == null) {
+        if (tenant == null || "".equals(tenant)) {
             return searchBooks(keyword, pageRequest);
         } else {
             return searchLibraryBooks(tenant, keyword, pageRequest);
@@ -57,14 +58,14 @@ public class LibraryBookService {
     }
 
     private List<Object> searchBooks(String keyword, Pageable pageRequest) {
-        if (keyword != null) {
-            return bookRepository.findAll(keyword, pageRequest)
+        if (keyword == null || "".equals(keyword)) {
+            return bookRepository.findAll(pageRequest)
                     .getContent()
                     .stream()
                     .map(bookMapper)
                     .collect(Collectors.toList());
         } else {
-            return bookRepository.findAll(pageRequest)
+            return bookRepository.findAll(keyword, pageRequest)
                     .getContent()
                     .stream()
                     .map(bookMapper)
