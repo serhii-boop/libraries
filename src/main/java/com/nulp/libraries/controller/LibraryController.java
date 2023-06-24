@@ -30,26 +30,30 @@ public class LibraryController {
 
 
     @GetMapping("/books")
-    public ResponseEntity<List<LibraryBooksDTO>> getAllBooksFromLibrary(@RequestParam("tenant") String tenantId) {
-        return ResponseEntity.ok(libraryBookService.getAllBooksByTenantId(tenantId));
+    public ResponseEntity<List<Object>> getAllBooksFromLibrary(
+            @RequestParam(value = "tenant", required = false) String tenantId,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "keyword", required = false) String keyword) {
+        return ResponseEntity.ok(libraryBookService.getAllBooksByTenantId(tenantId, pageNumber, pageSize, keyword));
     }
 
-    @GetMapping("/books/{tenant}/{bookId}")
-    public ResponseEntity<BooksDTO> getBookFromLibraryById(@PathVariable("tenant") String tenant,
-                                                                        @PathVariable("bookId") Long bookId) {
-        return ResponseEntity.ok(libraryBookService.getBookByTenantIdAndBookId(tenant, bookId));
+
+    @GetMapping("/books/{bookId}")
+    public ResponseEntity<BooksDTO> getBookFromLibraryById(@PathVariable("bookId") Long bookId) {
+        return ResponseEntity.ok(libraryBookService.getBookByBookId(bookId));
     }
 
     @GetMapping("/books/all")
     //@PreAuthorize("hasAuthority('WORKER')")
-    public ResponseEntity<List<BooksDTO>> getAllBooks(@RequestParam(value = "pageNumber", required = false) Integer pageNumber ,
+    public ResponseEntity<List<BooksDTO>> getAllBooks(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         return ResponseEntity.ok(bookService.getAllBooks(pageNumber, pageSize));
     }
 
     @GetMapping("/books/{bookName}")
     public ResponseEntity<List<BooksDTO>> getAllBooksByName(@PathVariable("bookName") String bookName,
-                                                            @RequestParam(value = "pageNumber", required = false) Integer pageNumber ,
+                                                            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                             @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         return ResponseEntity.ok(bookService.getAllByName(bookName, pageNumber, pageSize));
     }

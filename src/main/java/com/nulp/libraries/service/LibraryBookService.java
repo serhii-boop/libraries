@@ -8,9 +8,12 @@ import com.nulp.libraries.mapper.BookMapper;
 import com.nulp.libraries.repository.book.BookRepository;
 import com.nulp.libraries.repository.library.LibraryBooksRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -22,17 +25,10 @@ public class LibraryBookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
-    public BooksDTO getBookByTenantIdAndBookId(String tenantId, Long bookId) {
-
-        var libraryBooks = libraryBooksRepository.findAllByTenantId(tenantId);
-
-        return libraryBooks.stream().filter(book -> bookId.equals(book.getBookId()))
-                .findFirst()
-                .map(book -> bookRepository.findById(bookId)
-                        .orElseThrow(() -> new RuntimeException(String.format("Book with bookId %d not found", bookId))))
+    public BooksDTO getBookByBookId(Long bookId) {
+        return bookRepository.findById(bookId)
                 .map(bookMapper)
-                .orElseThrow(() -> new RuntimeException(String.format("Book with bookId %d not found", bookId)));
-
+                .orElseThrow(() -> new RuntimeException(String.format("Book with id %d not found", bookId)));
     }
 
     private LibraryBooksDTO mapToLibraryBooksDTO(Book book, LibraryBooks libBook) {
@@ -50,15 +46,47 @@ public class LibraryBookService {
                 .build();
     }
 
-    public List<LibraryBooksDTO> getAllBooksByTenantId(String tenant) {
+    public List<Object> getAllBooksByTenantId(String tenant, Integer pageNumber, Integer pageSize, String keyword) {
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        if (tenant == null) {
+            return searchBooks(keyword, pageRequest);
+        } else {
+            return searchLibraryBooks(tenant, keyword, pageRequest);
+        }
+    }
+
+    private List<Object> searchBooks(String keyword, Pageable pageRequest) {
+        if (keyword != null) {
+            return bookRepository.findAll(keyword, pageRequest)
+                    .getContent()
+                    .stream()
+                    .map(bookMapper)
+                    .collect(Collectors.toList());
+        } else {
+            return bookRepository.findAll(pageRequest)
+                    .getContent()
+                    .stream()
+                    .map(bookMapper)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    private List<Object> searchLibraryBooks(String tenant, String keyword, Pageable pageRequest) {
         var libraryBooks = libraryBooksRepository.findAllByTenantId(tenant);
-        List<Long> ids = libraryBooks.stream().map(LibraryBooks::getBookId).collect(toList());
-        var books = bookRepository.findAllByIdIn(ids);
+        List<Long> bookIds = libraryBooks.stream().map(LibraryBooks::getBookId).collect(Collectors.toList());
+
+        List<Book> books;
+        if (keyword != null) {
+            books = bookRepository.findAllByIdIn(bookIds, keyword, pageRequest);
+        } else {
+            books = bookRepository.findAllByIdIn(bookIds, pageRequest);
+        }
 
         return libraryBooks.stream()
                 .flatMap(libBook -> books.stream()
                         .filter(book -> libBook.getBookId() == book.getId())
                         .map(book -> mapToLibraryBooksDTO(book, libBook)))
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 }
