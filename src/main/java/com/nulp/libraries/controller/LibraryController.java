@@ -35,9 +35,9 @@ public class LibraryController {
     }
 
     @GetMapping("/books/{tenant}/{bookId}")
-    public ResponseEntity<BooksDTO> getAllBooksFromLibrary(@PathVariable("tenant") String tenant,
+    public ResponseEntity<BooksDTO> getBookFromLibraryById(@PathVariable("tenant") String tenant,
                                                                         @PathVariable("bookId") Long bookId) {
-        return ResponseEntity.ok(libraryBookService.getAllBooksByTenantIdAndBookId(tenant, bookId));
+        return ResponseEntity.ok(libraryBookService.getBookByTenantIdAndBookId(tenant, bookId));
     }
 
     @GetMapping("/books/all")

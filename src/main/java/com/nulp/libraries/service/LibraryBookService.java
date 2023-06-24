@@ -22,7 +22,7 @@ public class LibraryBookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
-    public BooksDTO getAllBooksByTenantIdAndBookId(String tenantId, Long bookId) {
+    public BooksDTO getBookByTenantIdAndBookId(String tenantId, Long bookId) {
 
         var libraryBooks = libraryBooksRepository.findAllByTenantId(tenantId);
 
