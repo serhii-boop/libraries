@@ -31,6 +31,7 @@ public class BookService {
                 .collect(toList());
     }
 
+    @Transactional(value = "primaryTransactionManager", readOnly = true)
     public List<BooksDTO> getAllByName(String bookName, Integer pageNumber, Integer pageSize) {
         PageRequest pageRequest = PageRequest.of(0, 10);
         if (pageNumber != null && pageSize != null) {
