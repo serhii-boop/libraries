@@ -25,8 +25,11 @@ public class VisitorBookService {
                 .orElseThrow(() -> new RuntimeException(String.format("Visitor with id %d not found", visitorId)));
     }
 
-    public List<Visitor> getAllVisitorFromLibrary(String tenantId, int pageNumber, int pageSize) {
-        return visitorRepository.getAllByTenantId(tenantId, PageRequest.of(pageNumber, pageSize)).getContent();
+    public List<Visitor> getAllVisitorFromLibrary(String tenantId, int pageNumber, int pageSize, String keyword) {
+        if (keyword == null || "".equals(keyword)) {
+            return visitorRepository.getAllByTenantId(tenantId, PageRequest.of(pageNumber, pageSize)).getContent();
+        }
+        return visitorRepository.getAllByTenantId(tenantId, keyword, PageRequest.of(pageNumber, pageSize)).getContent();
     }
 
     public void deleteVisitorFromLibrary(Long visitorId) {

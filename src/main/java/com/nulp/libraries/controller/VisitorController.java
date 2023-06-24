@@ -31,8 +31,9 @@ public class VisitorController {
     @GetMapping
     public ResponseEntity<List<Visitor>> getAllVisitorFromLibrary(@RequestParam("tenant") String tenantId,
                                                                   @RequestParam(value = "pageNumber") Integer pageNumber,
-                                                                  @RequestParam(value = "pageSize") Integer pageSize) {
-        return ResponseEntity.ok(visitorBookService.getAllVisitorFromLibrary(tenantId, pageNumber, pageSize));
+                                                                  @RequestParam(value = "pageSize") Integer pageSize,
+                                                                  @RequestParam(value = "keyword", required = false) String keyword) {
+        return ResponseEntity.ok(visitorBookService.getAllVisitorFromLibrary(tenantId, pageNumber, pageSize, keyword));
     }
 
     @DeleteMapping("/{visitorId}")
