@@ -1,8 +1,10 @@
 package com.nulp.libraries.controller;
 
 import com.nulp.libraries.entity.dto.BooksDTO;
+import com.nulp.libraries.entity.dto.CreateBookRQ;
 import com.nulp.libraries.entity.dto.LibraryBooksDTO;
 import com.nulp.libraries.entity.library.Library;
+import com.nulp.libraries.entity.library.LibraryBooks;
 import com.nulp.libraries.service.BookService;
 import com.nulp.libraries.service.LibraryBookService;
 import com.nulp.libraries.service.LibraryService;
@@ -21,12 +23,6 @@ public class LibraryController {
     private final BookService bookService;
     private final LibraryBookService libraryBookService;
     private final LibraryService libraryService;
-
-    @GetMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<String> sayHello() {
-        return ResponseEntity.ok("Hello from second endpoint");
-    }
 
 
     @GetMapping("/books")
@@ -63,4 +59,8 @@ public class LibraryController {
         return ResponseEntity.ok(libraryService.getAll());
     }
 
+    @PostMapping("/book")
+    public ResponseEntity<LibraryBooksDTO> addBookToLibrary(@RequestBody CreateBookRQ createBookRQ) {
+        return ResponseEntity.ok(libraryBookService.addBookToLibrary(createBookRQ));
+    }
 }

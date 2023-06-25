@@ -1,16 +1,22 @@
 package com.nulp.libraries.service;
 
+import com.nulp.libraries.entity.book.Author;
 import com.nulp.libraries.entity.book.Book;
+import com.nulp.libraries.entity.book.Genre;
 import com.nulp.libraries.entity.dto.BooksDTO;
+import com.nulp.libraries.entity.dto.CreateBookRQ;
 import com.nulp.libraries.entity.dto.LibraryBooksDTO;
 import com.nulp.libraries.entity.library.LibraryBooks;
 import com.nulp.libraries.mapper.BookMapper;
+import com.nulp.libraries.repository.book.AuthorRepository;
 import com.nulp.libraries.repository.book.BookRepository;
+import com.nulp.libraries.repository.book.GenreRepository;
 import com.nulp.libraries.repository.library.LibraryBooksRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +29,8 @@ import static java.util.stream.Collectors.toList;
 public class LibraryBookService {
 
     private final LibraryBooksRepository libraryBooksRepository;
+    private final GenreRepository genreRepository;
+    private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
@@ -55,6 +63,37 @@ public class LibraryBookService {
         } else {
             return searchLibraryBooks(tenant, keyword, pageRequest);
         }
+    }
+
+    @Transactional(value = "primaryTransactionManager")
+    public LibraryBooksDTO addBookToLibrary(CreateBookRQ createBookRQ) {
+
+        Genre genre = genreRepository.findByName(createBookRQ.getBookRQ().getGenre()).orElse(null);
+        Author author = authorRepository.findByAuthorName(createBookRQ.getBookRQ().getAuthorName()).orElse(null);
+
+        if (genre == null) {
+            genre = genreRepository.save(Genre.builder().name(createBookRQ.getBookRQ().getGenre()).build());
+        }
+
+        if (author == null) {
+            author = authorRepository.save(Author.builder().authorName(createBookRQ.getBookRQ().getAuthorName()).build());
+        }
+
+        var createdBook = bookRepository.save(Book.builder()
+                .title(createBookRQ.getBookRQ().getTitle())
+                .isbn(createBookRQ.getBookRQ().getIsbn())
+                .genre(genre)
+                .author(author)
+                .description(createBookRQ.getBookRQ().getDescription())
+                .publication(createBookRQ.getBookRQ().getPublication())
+                .publishedYear(createBookRQ.getBookRQ().getPublishedYear())
+                .build());
+
+        var libraryBook = libraryBooksRepository.save(LibraryBooks.builder()
+                .bookId(createdBook.getId())
+                .tenantId(createBookRQ.getTenantId())
+                .build());
+        return mapToLibraryBooksDTO(createdBook, libraryBook);
     }
 
     private List<Object> searchBooks(String keyword, Pageable pageRequest) {
