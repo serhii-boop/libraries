@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class CreateBookRQ {
 
     private String tenantId;
+    private Long bookId;
     private BookRQ bookRQ;
 }

@@ -66,8 +66,7 @@ public class LibraryBookService {
     }
 
     @Transactional(value = "primaryTransactionManager")
-    public LibraryBooksDTO addBookToLibrary(CreateBookRQ createBookRQ) {
-
+    public LibraryBooksDTO populateBookToLibrary(CreateBookRQ createBookRQ) {
         Genre genre = genreRepository.findByName(createBookRQ.getBookRQ().getGenre()).orElse(null);
         Author author = authorRepository.findByAuthorName(createBookRQ.getBookRQ().getAuthorName()).orElse(null);
 
@@ -78,6 +77,34 @@ public class LibraryBookService {
         if (author == null) {
             author = authorRepository.save(Author.builder().authorName(createBookRQ.getBookRQ().getAuthorName()).build());
         }
+
+        if (createBookRQ.getBookId() == null) {
+            return addBookToLibrary(createBookRQ, author, genre);
+        } else {
+            return updateBookingLibrary(createBookRQ, author, genre);
+        }
+    }
+
+    private LibraryBooksDTO updateBookingLibrary(CreateBookRQ createBookRQ, Author author, Genre genre) {
+        var existingBook = bookRepository.findById(createBookRQ.getBookId())
+                .orElseThrow(RuntimeException::new);
+
+        var updatedBook = bookRepository.save(Book.builder()
+                .id(createBookRQ.getBookId())
+                .title(createBookRQ.getBookRQ().getTitle())
+                .isbn(createBookRQ.getBookRQ().getIsbn())
+                .genre(genre)
+                .author(author)
+                .description(createBookRQ.getBookRQ().getDescription())
+                .publication(createBookRQ.getBookRQ().getPublication())
+                .publishedYear(createBookRQ.getBookRQ().getPublishedYear())
+                .build());
+
+        var libBook = libraryBooksRepository.findByBookId(updatedBook.getId()).orElseThrow(RuntimeException::new);
+        return mapToLibraryBooksDTO(updatedBook, libBook);
+    }
+
+    private LibraryBooksDTO addBookToLibrary(CreateBookRQ createBookRQ, Author author, Genre genre) {
 
         var createdBook = bookRepository.save(Book.builder()
                 .title(createBookRQ.getBookRQ().getTitle())

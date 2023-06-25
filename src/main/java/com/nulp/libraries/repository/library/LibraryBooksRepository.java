@@ -12,6 +12,7 @@ public interface LibraryBooksRepository extends JpaRepository<LibraryBooks, Long
     List<LibraryBooks> findAllByTenantId(String tenantId, Pageable pageable);
     List<LibraryBooks> findAllByTenantId(String tenantId);
 
+    Optional<LibraryBooks> findByBookId(Long bookId);
     Optional<LibraryBooks> findByTenantId(String tenantId);
 
 }

@@ -60,7 +60,7 @@ public class LibraryController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<LibraryBooksDTO> addBookToLibrary(@RequestBody CreateBookRQ createBookRQ) {
-        return ResponseEntity.ok(libraryBookService.addBookToLibrary(createBookRQ));
+    public ResponseEntity<LibraryBooksDTO> populateBookToLibrary(@RequestBody CreateBookRQ createBookRQ) {
+        return ResponseEntity.ok(libraryBookService.populateBookToLibrary(createBookRQ));
     }
 }
