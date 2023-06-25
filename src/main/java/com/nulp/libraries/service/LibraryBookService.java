@@ -161,4 +161,14 @@ public class LibraryBookService {
     public void deleteBookById(Long bookId) {
         libraryBooksRepository.deleteByBookId(bookId);
     }
+
+    @Transactional(value = "primaryTransactionManager")
+    public LibraryBooksDTO addExistingBookToLibrary(String tenantId, Long bookId) {
+        var libraryBook = libraryBooksRepository.save(LibraryBooks.builder()
+                .bookId(bookId)
+                .tenantId(tenantId)
+                .build());
+        var book = bookRepository.findById(bookId).orElseThrow(RuntimeException::new);
+        return mapToLibraryBooksDTO(book, libraryBook);
+    }
 }
