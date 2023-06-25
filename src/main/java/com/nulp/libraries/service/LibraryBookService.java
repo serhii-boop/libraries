@@ -156,4 +156,9 @@ public class LibraryBookService {
                         .map(book -> mapToLibraryBooksDTO(book, libBook)))
                 .collect(Collectors.toList());
     }
+
+    @Transactional(value = "secondaryTransactionManager")
+    public void deleteBookById(Long bookId) {
+        libraryBooksRepository.deleteByBookId(bookId);
+    }
 }

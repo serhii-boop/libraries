@@ -63,4 +63,9 @@ public class LibraryController {
     public ResponseEntity<LibraryBooksDTO> populateBookToLibrary(@RequestBody CreateBookRQ createBookRQ) {
         return ResponseEntity.ok(libraryBookService.populateBookToLibrary(createBookRQ));
     }
+
+    @DeleteMapping("/book/{bookId}")
+    public void deleteBookById(@PathVariable("bookId") Long bookId) {
+         libraryBookService.deleteBookById(bookId);
+    }
 }

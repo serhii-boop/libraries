@@ -15,4 +15,6 @@ public interface LibraryBooksRepository extends JpaRepository<LibraryBooks, Long
     Optional<LibraryBooks> findByBookId(Long bookId);
     Optional<LibraryBooks> findByTenantId(String tenantId);
 
+    void deleteByBookId(Long bookId);
+
 }
